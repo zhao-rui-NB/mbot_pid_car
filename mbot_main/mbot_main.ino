@@ -16,13 +16,14 @@ void setup(){
 
 void loop(){
 
+    const unsigned long update_time = 10;
 
-    if (millis() - start_time > 10){
+    if (millis() - start_time > update_time){
         start_time = millis();
 
 
         float error = read_ir();
-        pid(error , 10);
+        pid(error , update_time);
         // Serial.print(error);
         // Serial.print("\t");
         // Serial.print(LMotorSpeed);
