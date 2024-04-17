@@ -12,7 +12,7 @@ void setup(){
     // pinMode(PIN_IR_2, INPUT);
     // pinMode(PIN_IR_3, INPUT);
     // pinMode(PIN_IR_4, INPUT);
-    Serial.begin(9600);
+    Serial.begin(115200);
 
 
 }

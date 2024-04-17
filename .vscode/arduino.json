@@ -1,5 +1,5 @@
 {
     "board": "arduino:avr:uno",
-    "port": "COM6",
+    "port": "COM8",
     "sketch": "mbot_main\\mbot_main.ino"
 }

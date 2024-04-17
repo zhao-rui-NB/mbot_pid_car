@@ -5,9 +5,9 @@ const int IR_PIN[5] = {18, 16, 17, 14, 15};
 
 
 const int IR_CNT = 5;
-const int IR_BLACK[IR_CNT] = {930 , 908 , 901 , 902 , 931};
-const int IR_WHITE[IR_CNT] = { 32 ,  30 ,  29 ,  29 , 37 };
-const int IR_THRESHOLD[IR_CNT] = { 
+int IR_BLACK[IR_CNT] = {930 , 908 , 901 , 902 , 931};
+int IR_WHITE[IR_CNT] = { 32 ,  30 ,  29 ,  29 , 37 };
+int IR_THRESHOLD[IR_CNT] = { 
     (IR_BLACK[0]+IR_WHITE[0])/2,
     (IR_BLACK[1]+IR_WHITE[1])/2,
     (IR_BLACK[2]+IR_WHITE[2])/2,
@@ -21,6 +21,35 @@ bool ir_data[IR_CNT];
 
 
 float read_ir(){
+    static float last_res = 0;
+
+    // read ir sensors
+    // > threshold trigger , data = 1 
+    for(int i=0 ; i<IR_CNT ; i++){
+        ir_data[i] = analogRead(IR_PIN[i]) > IR_THRESHOLD[i];
+    }
+
+    int res = 0;
+    if(ir_data[0])res =  -2;
+    else if(ir_data[4])res =   2;
+    else if(ir_data[1])res =   -1;
+    else if(ir_data[3])res =   1;
+    else if(ir_data[2])res =   0;
+    else if(last_res > 0){
+        res = 3;
+    }
+    else if(last_res < 0){
+        res = -3;
+    }
+    last_res = res;
+
+    return res;
+    
+
+}
+
+
+float read_ir__(){
     static float last_res = 0;
 
     // read ir sensors
