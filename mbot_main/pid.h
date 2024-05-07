@@ -6,7 +6,7 @@ int RMotorSpeed = 0;
 
 #define kp 100 //80
 #define ki 0
-#define kd 0
+#define kd 40
 
 void pid(float error , float dt){
     static float last_error = 0;

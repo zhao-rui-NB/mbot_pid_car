@@ -6,6 +6,11 @@
 unsigned long start_time = 0;
 
 void setup(){
+    pinMode(8, OUTPUT);
+
+    
+
+
     // while(analogRead(A7) > 30){}
     // delay(1000); // wait for serial read
     Serial.begin(115200);
@@ -22,6 +27,8 @@ void setup(){
         ir_print_data();
     }
 
+    tone(8, 1200, 20);
+
     // keep slow rotating to stop at middle of the black line
     motor_write(80, -80);
     start_time = millis();
@@ -33,6 +40,9 @@ void setup(){
         }
     }
     motor_write(0, 0);
+
+    tone(8, 1200, 20);
+
     ir_print_range();
     // ir_print_error();
 
@@ -64,6 +74,7 @@ void loop(){
 
     // button stop
     if(analogRead(A7) < 30 || Serial.available() > 0){
+        tone(8, 3600, 50);
         Serial.println("A7");   
         while(analogRead(A7) < 100){}
         motor_write(0, 0);
