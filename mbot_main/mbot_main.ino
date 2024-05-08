@@ -64,7 +64,7 @@ void loop(){
     if (millis() - start_time > update_time){
         start_time = millis();
 
-        float error = ir_read(true);
+        float error = ir_read(false);
         pid(error , update_time);
         motor_write(LMotorSpeed, RMotorSpeed);
     }

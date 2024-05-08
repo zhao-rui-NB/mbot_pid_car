@@ -5,9 +5,11 @@
 // int IR_WHITE[IR_CNT] = { 32 ,  30 ,  29 ,  29 , 37 };
 
 
-const int IR_CNT = 5;
-const int IR_PIN[5] = {18, 16, 17, 14, 15};
-const float IR_WEIGHT[IR_CNT] = { -2, -1, 0, 1, 2 };
+int IR_CNT = 5;
+int IR_PIN[5] = {18, 16, 17, 14, 15};
+double IR_WEIGHT[5] = { -2, -1, 0, 1, 2 };
+double MIDDLE_WEIGHT = 1.0;
+// const float IR_WEIGHT[IR_CNT] = {  };
 
 
 // max is black , min is white
@@ -33,8 +35,22 @@ float ir_read(bool update_range){
     // calculate error
     ir_error = 0;
     for(int i=0 ; i<IR_CNT ; i++){
-        ir_error += float(ir_data[i] - ir_min[i]) / float(ir_max[i] - ir_min[i]) * IR_WEIGHT[i];
+        ir_error += (double(ir_data[i] - ir_min[i]) / double(ir_max[i] - ir_min[i])) * IR_WEIGHT[i];
     }
+    // process MIDDLE_WEIGHT
+    // pull error close to 0, by MIDDLE_WEIGHT
+    // float mid_fix = float(ir_data[2] - ir_min[2]) / float(ir_max[2] - ir_min[2]) * MIDDLE_WEIGHT;
+    // bool neg = ir_error<0;
+
+    // ir_error = abs(ir_error);
+    // ir_error = ir_error - mid_fix;
+    // if(ir_error<0)
+    //     ir_error = 0;
+    // if(neg){
+    //     ir_error *= -1;
+    // }
+
+
     return ir_error;
 }
 
