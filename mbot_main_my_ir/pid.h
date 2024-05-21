@@ -1,33 +1,23 @@
-int Ltarget_speed = 160;
-int Rtarget_speed = 160;
 
-<<<<<<< HEAD
-// #define PID_V1
-#define PID_V2
+#define PID_V1
 
+
+
+float Ltarget_speed = 180;
+float Rtarget_speed = 180;
 int LMotorSpeed = 0;
 int RMotorSpeed = 0;
 
 
-
 #ifdef PID_V1
-float Ltarget_speed = 200;
-float Rtarget_speed = 200;
 
 
 #define kp 70 //80
 #define ki 0
-#define kd 25
-=======
-int LMotorSpeed = 0;
-int RMotorSpeed = 0;
-
-#define kp 80
-#define ki 0
-#define kd 0
->>>>>>> 71d6a47e09c2cf59b1923735e42cb0d926cc0d96
+#define kd 20
 
 void pid(float error , float dt){
+
     static float last_error = 0;
     static float integral = 0;
     float derivative;
@@ -36,38 +26,31 @@ void pid(float error , float dt){
     derivative = (error-last_error)/dt;
     int out = kp*error + ki*integral + kd*derivative;
 
+    LMotorSpeed = Ltarget_speed + out;
+    RMotorSpeed = Rtarget_speed - out;
 
-    // v1
-    // LMotorSpeed = Ltarget_speed + out;
-    // RMotorSpeed = Rtarget_speed - out;
-
-
-    // v2
-    int tgspeed = 200;
-    if(out>0){
-        LMotorSpeed = tgspeed;
-        RMotorSpeed = tgspeed - out*2;
+    if(LMotorSpeed<35){
+        LMotorSpeed -= 70;
     }
-    else{
-        LMotorSpeed = tgspeed + out*2;
-        RMotorSpeed = tgspeed; 
+    if(RMotorSpeed<35){
+        RMotorSpeed -= 70;
     }
 
+    last_error = error;
+}
+
+#endif
 
 
-<<<<<<< HEAD
 
 
 #ifdef PID_V2
 
-
-
-
 #define kp 120 //80
 #define ki 0
 #define kd 50
-float Ltarget_speed = 250;
-float Rtarget_speed = 250;
+float Ltarget_speed = 255;
+float Rtarget_speed = 255;
 void pid(float error , float dt){
 
     static float last_error = 0;
@@ -98,12 +81,3 @@ void pid(float error , float dt){
 }
 
 #endif
-=======
-    // if(LMotorSpeed<35){
-    //     LMotorSpeed -= 70;
-    // }
-    // if(RMotorSpeed<35){
-    //     RMotorSpeed -= 70;
-    // }
-}
->>>>>>> 71d6a47e09c2cf59b1923735e42cb0d926cc0d96
