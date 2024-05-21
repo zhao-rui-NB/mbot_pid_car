@@ -91,6 +91,10 @@ void setup(){
 
 }
 
+#define filter_size 3
+int filter[filter_size] = {0};
+int filter_pos = 0;
+
 void loop(){
 
     const unsigned long update_time = 10;
@@ -100,6 +104,18 @@ void loop(){
 
 
         float error = read_ir();
+        // add to filter 
+        filter[filter_pos] = error;
+        filter_pos = (filter_pos+1)%filter_size;
+        // get filter aveg
+        error = 0;
+        for(int i=0 ; i<filter_size ; i++){
+            error += filter[i];
+        }
+        error /= filter_size;
+
+
+
         Serial.println(error);
         pid(error , update_time);
         // Serial.print(error);

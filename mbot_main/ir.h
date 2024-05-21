@@ -1,4 +1,4 @@
-// #define IR_DEBUG
+#define IR_DEBUG
 
 
 const int IR_PIN[5] = {18, 16, 17, 14, 15};
