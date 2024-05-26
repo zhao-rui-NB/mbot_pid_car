@@ -8,9 +8,6 @@ unsigned long start_time = 0;
 void setup(){
     pinMode(8, OUTPUT);
 
-    
-
-
     // while(analogRead(A7) > 30){}
     // delay(1000); // wait for serial read
     Serial.begin(115200);
@@ -22,7 +19,7 @@ void setup(){
     // and find the max and min value of the ir sensor
     start_time = millis();
     motor_write(150, -150);
-    while(millis() - start_time < 2000){
+    while(millis() - start_time < 2500){
         ir_read(true);
         ir_print_data();
     }
@@ -56,45 +53,80 @@ void setup(){
     //     delay(100);
     // }
     delay(1000);
+
+
+
+    // irdebug 
+    // while(1){
+    //     ir_read(false);
+    //     // ir_print_data(false);
+    //     ir_print_norm_data(false);
+    //     ir_print_error();
+    //     delay(100);
+    // }
+
+    // irdebug 
+    // while(1){
+    //     ir_read(false);
+    //     float res = calc_ir_digital_error();
+    //     ir_print_data(false);
+    //     ir_print_norm_data(false);
+    //     ir_print_digital_data(false);
+    //     Serial.print("ir_digital_error: ");Serial.println(res);
+        
+    // }
+
+
+
 }
 
-#define filter_size 3
-int filter[filter_size] = {0};
-int filter_pos = 0;
-
 void loop(){
-
-    const unsigned long update_time = 10;
+    static bool stable_flag = false;
+    static int stable_cnt = 0;
+    const unsigned long update_time = 1;
+    
     if (millis() - start_time > update_time){
-        start_time = millis();
 
-<<<<<<< HEAD
 
-        float error = read_ir();
-        // add to filter 
-        filter[filter_pos] = error;
-        filter_pos = (filter_pos+1)%filter_size;
-        // get filter aveg
-        error = 0;
-        for(int i=0 ; i<filter_size ; i++){
-            error += filter[i];
+    bool stable = ir_digital_data[2] || ir_digital_data[1] || ir_digital_data[3];
+    if(stable){
+        stable_cnt++;
+        if(stable_cnt > 120){
+            stable_flag = true;
         }
-        error /= filter_size;
+    }
+    else{
+        stable_cnt = 0;
+        stable_flag = false;
+    }
 
-
-
-        Serial.println(error);
-=======
+    
+    if(stable_flag){
+        //############# fast pid #############
+        // start_time = millis();
         float error = ir_read(false);
->>>>>>> 71d6a47e09c2cf59b1923735e42cb0d926cc0d96
         pid(error , update_time);
         motor_write(LMotorSpeed, RMotorSpeed);
     }
+    else{
+        //############# slow pid #############
+        ir_read(false);
+        float error = calc_ir_digital_error();
+        pid_slow(error, update_time);
+        motor_write(LMotorSpeed, RMotorSpeed);
 
+        Serial.print("ir_digit_error: ");Serial.print(error);Serial.print("\t");
+        ir_print_digital_data();
+    }   
+
+
+    } // end of if (millis() - start_time > update_time)
 
     
+    // bool stop = !ir_digital_data[2] && !ir_digital_data[1] && !ir_digital_data[3];
 
     // button stop
+    // if(stop ||analogRead(A7) < 30 || Serial.available() > 0){
     if(analogRead(A7) < 30 || Serial.available() > 0){
         tone(8, 3600, 50);
         Serial.println("A7");   
@@ -103,6 +135,11 @@ void loop(){
         while (1){
             ir_read(false);
             ir_print_error();
+
+            if(analogRead(A7) < 30 || Serial.available() > 0){
+                delay(100);
+                break;
+            }
 
         }
     }

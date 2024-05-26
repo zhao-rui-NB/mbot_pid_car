@@ -1,9 +1,5 @@
 {
     "board": "arduino:avr:uno",
-<<<<<<< HEAD
-    "port": "COM3",
-=======
-    "port": "COM5",
->>>>>>> 71d6a47e09c2cf59b1923735e42cb0d926cc0d96
-    "sketch": "mbot_main\\mbot_main.ino"
+    "sketch": "mbot_main\\mbot_main.ino",
+    "port": "COM7"
 }

@@ -1,31 +1,15 @@
-int Ltarget_speed = 160;
-int Rtarget_speed = 160;
-
-<<<<<<< HEAD
-// #define PID_V1
-#define PID_V2
-
 int LMotorSpeed = 0;
 int RMotorSpeed = 0;
 
+// V1
+// #define kp 270
+// #define ki 0
+// #define kd 100
 
-
-#ifdef PID_V1
-float Ltarget_speed = 200;
-float Rtarget_speed = 200;
-
-
-#define kp 70 //80
-#define ki 0
-#define kd 25
-=======
-int LMotorSpeed = 0;
-int RMotorSpeed = 0;
-
-#define kp 80
+// V2 // speed 200
+#define kp 130
 #define ki 0
 #define kd 0
->>>>>>> 71d6a47e09c2cf59b1923735e42cb0d926cc0d96
 
 void pid(float error , float dt){
     static float last_error = 0;
@@ -36,14 +20,14 @@ void pid(float error , float dt){
     derivative = (error-last_error)/dt;
     int out = kp*error + ki*integral + kd*derivative;
 
-
     // v1
+    // int Ltarget_speed = 150;
+    // int Rtarget_speed = 150;
     // LMotorSpeed = Ltarget_speed + out;
     // RMotorSpeed = Rtarget_speed - out;
 
-
     // v2
-    int tgspeed = 200;
+    int tgspeed = 255;
     if(out>0){
         LMotorSpeed = tgspeed;
         RMotorSpeed = tgspeed - out*2;
@@ -53,57 +37,38 @@ void pid(float error , float dt){
         RMotorSpeed = tgspeed; 
     }
 
+}
 
 
-<<<<<<< HEAD
+#define kp_slow 40
+#define ki_slow 0
+#define kd_slow 0
 
 
-#ifdef PID_V2
-
-
-
-
-#define kp 120 //80
-#define ki 0
-#define kd 50
-float Ltarget_speed = 250;
-float Rtarget_speed = 250;
-void pid(float error , float dt){
-
+void pid_slow(float error , float dt){
+    // use ir digital data
     static float last_error = 0;
     static float integral = 0;
     float derivative;
     
     integral += error*dt;
     derivative = (error-last_error)/dt;
-    int out = kp*error + ki*integral + kd*derivative;
+    int out = kp_slow*error + ki_slow*integral + kd_slow*derivative;
 
-    // int left_speed = Ltarget_speed + out;
-    // int right_speed = Rtarget_speed - out;
+    // v1
+    int Ltarget_speed = 160;
+    int Rtarget_speed = 160;
+    LMotorSpeed = Ltarget_speed + out;
+    RMotorSpeed = Rtarget_speed - out;
+    
 
-    int left_speed = Ltarget_speed;
-    int right_speed = Rtarget_speed;
-
-    if(out > 0){
-        right_speed -= out;
+    // cut the speed range -40~40, bbcause the motor can't run at low speed
+    const int min_speed = 30;
+    if(LMotorSpeed<min_speed){
+        LMotorSpeed -= 2*min_speed;
     }
-    else if(out < 0){
-        left_speed += out;
+    if(RMotorSpeed<min_speed){
+        RMotorSpeed -= 2*min_speed;
     }
 
-    LMotorSpeed = left_speed;
-    RMotorSpeed = right_speed;
-
-    last_error = error;
 }
-
-#endif
-=======
-    // if(LMotorSpeed<35){
-    //     LMotorSpeed -= 70;
-    // }
-    // if(RMotorSpeed<35){
-    //     RMotorSpeed -= 70;
-    // }
-}
->>>>>>> 71d6a47e09c2cf59b1923735e42cb0d926cc0d96
