@@ -7,7 +7,7 @@ int RMotorSpeed = 0;
 // #define kd 100
 
 // V2 // speed 200
-#define kp 130
+#define kp 110
 #define ki 0
 #define kd 0
 
@@ -40,10 +40,11 @@ void pid(float error , float dt){
 }
 
 
-#define kp_slow 40
+#define kp_slow 45
 #define ki_slow 0
 #define kd_slow 0
 
+// speed 160 , kp 40
 
 void pid_slow(float error , float dt){
     // use ir digital data
@@ -56,8 +57,8 @@ void pid_slow(float error , float dt){
     int out = kp_slow*error + ki_slow*integral + kd_slow*derivative;
 
     // v1
-    int Ltarget_speed = 160;
-    int Rtarget_speed = 160;
+    int Ltarget_speed = 180;
+    int Rtarget_speed = 180;
     LMotorSpeed = Ltarget_speed + out;
     RMotorSpeed = Rtarget_speed - out;
     

@@ -81,7 +81,7 @@ void setup(){
 }
 
 void loop(){
-    static bool stable_flag = false;
+    static bool stable_flag = true;
     static int stable_cnt = 0;
     const unsigned long update_time = 1;
     
