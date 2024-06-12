@@ -57,8 +57,8 @@ void pid_slow(float error , float dt){
     int out = kp_slow*error + ki_slow*integral + kd_slow*derivative;
 
     // v1
-    int Ltarget_speed = 180;
-    int Rtarget_speed = 180;
+    int Ltarget_speed = 210;
+    int Rtarget_speed = 210;
     LMotorSpeed = Ltarget_speed + out;
     RMotorSpeed = Rtarget_speed - out;
     

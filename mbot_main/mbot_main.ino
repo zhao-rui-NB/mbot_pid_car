@@ -4,6 +4,9 @@
 #include "pid.h"
 
 unsigned long start_time = 0;
+unsigned long start_run_time = 0;
+int stop_count = 0;
+
 
 
 float read_ultrasonic() {
@@ -31,7 +34,7 @@ float read_ultrasonic() {
 void avoidance(){
     static unsigned long utl_start_time = 0;
 
-    if(millis() - utl_start_time > 50){
+    if(millis() - utl_start_time > 30){
         utl_start_time = millis();
     
         float d = read_ultrasonic();
@@ -42,12 +45,12 @@ void avoidance(){
             delay(300);
             
             motor_write(130, 255);
-            delay(900);
+            delay(800);
 
-            motor_write(200, 0);
-            delay(150);
+            motor_write(160, 80);
+            delay(190);
 
-            motor_write(0, 0);  
+            motor_write(150, 150);  
             // while(1){}
         }
     
@@ -57,35 +60,13 @@ void avoidance(){
 
 }
 
-
-
-
 void setup(){
     pinMode(8, OUTPUT);
 
-    // while(analogRead(A7) > 30){}
-    // delay(1000); // wait for serial read
     Serial.begin(115200);
     motor_setup();
 
     pinMode(A7, INPUT_PULLUP);
-
-
-    // 
-    // if(0){
-    //     motor_write(200, 0);
-    //     delay(300);
-        
-    //     motor_write(130, 255);
-    //     delay(800);
-
-    //     motor_write(200, 0);
-    //     delay(150);
-
-    //     motor_write(0, 0);  
-    //     // while(1){}
-    // }
-
 
 
     // start calibration the ir sensor, it will rotate the robot
@@ -116,8 +97,9 @@ void setup(){
     ir_print_range();
     // ir_print_error();
 
-
-
+    // wait for the user to press the button
+    while(analogRead(A7) > 30){}
+    start_run_time = millis();
 
 
     // while(1){
@@ -125,7 +107,6 @@ void setup(){
     //     Serial.println(err);
     //     delay(100);
     // }
-    delay(1000);
 
 
 
@@ -192,16 +173,25 @@ void loop(){
         // ir_print_digital_data();
     }   
 
-    // avoidance();
+    avoidance();
 
     } // end of if (millis() - start_time > update_time)
 
-    
-    // bool stop = !ir_digital_data[2] && !ir_digital_data[1] && !ir_digital_data[3];
+    // all ir is not triger 
+    bool stop_dect = ir_digital_data[0] && ir_digital_data[1] && ir_digital_data[2] && ir_digital_data[3] && ir_digital_data[4];
+    if(stop_dect && millis()-start_run_time > 20000){
+        stop_count++;
+        if(stop_count > 20){
+            motor_write(0, 0);
+            while(1){}
+        }
+        
+    }
+        
 
     // button stop
     // if(stop ||analogRead(A7) < 30 || Serial.available() > 0){
-    if(analogRead(A7) < 30 || Serial.available() > 0){
+    if((analogRead(A7) < 30 && millis()-start_run_time > 1000) || Serial.available() > 0){
         tone(8, 3600, 50);
         Serial.println("A7");   
         while(analogRead(A7) < 100){}
